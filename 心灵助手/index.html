@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心灵助手 - AI情感陪伴</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💖</text></svg>">
+</head>
+<body>
+    <!-- 加载动画 -->
+    <div class="loading" id="loading">
+        <div class="spinner">
+            <div class="heart"><i class="fas fa-heart"></i></div>
+        </div>
+        <p>心灵助手正在启动...</p >
+    </div>
+
+    <div class="container" id="mainContainer" style="display: none;">
+        <!-- 顶部标题 -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-heartbeat logo-icon"></i>
+                <div>
+                    <h1>心灵助手</h1>
+                    <p class="tagline">你的AI情感陪伴伙伴</p >
+                </div>
+            </div>
+            <div class="header-info">
+                <div class="time-display" id="currentTime">--:--:--</div>
+                <button class="btn-help" id="helpBtn">
+                    <i class="fas fa-question-circle"></i> 帮助
+                </button>
+            </div>
+        </header>
+
+        <!-- 主界面 -->
+        <main class="main">
+            <!-- 左侧聊天区 -->
+            <section class="chat-area">
+                <!-- 聊天消息显示区 -->
+                <div class="messages-container" id="chatMessages">
+                    <!-- 欢迎消息 -->
+                    <div class="message assistant">
+                        <div class="avatar">🤖</div>
+                        <div class="message-content">
+                            <div class="sender">心灵助手</div>
+                            <div class="text">你好！我是心灵助手。我在这里倾听你的感受，你可以分享任何情绪和想法。</div>
+                            <div class="time">现在</div>
+                        </div>
+                    </div>
+                    
+                    <div class="message assistant">
+                        <div class="avatar">🤖</div>
+                        <div class="message-content">
+                            <div class="sender">心灵助手</div>
+                            <div class="text">试试对我说：<br>
+                            • "我今天心情不好"<br>
+                            • "我感到焦虑怎么办"<br>
+                            • "我最近压力很大"<br>
+                            • "我很开心，想分享"
+                            </div>
+                            <div class="time">现在</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 快速情绪按钮 -->
+                <div class="quick-emotions">
+                    <button class="emotion-btn" data-emotion="sad">
+                        <i class="fas fa-sad-tear"></i> 难过
+                    </button>
+                    <button class="emotion-btn" data-emotion="anxious">
+                        <i class="fas fa-flushed"></i> 焦虑
+                    </button>
+                    <button class="emotion-btn" data-emotion="happy">
+                        <i class="fas fa-laugh-beam"></i> 开心
+                    </button>
+                    <button class="emotion-btn" data-emotion="angry">
+                        <i class="fas fa-angry"></i> 生气
+                    </button>
+                    <button class="emotion-btn" data-emotion="confused">
+                        <i class="fas fa-question-circle"></i> 困惑
+                    </button>
+                </div>
+
+                <!-- 输入区域 -->
+                <div class="input-area">
+                    <div class="input-wrapper">
+                        <textarea 
+                            id="userInput" 
+                            placeholder="在这里写下你的感受..."
+                            rows="3"></textarea>
+                        <div class="input-buttons">
+                            <button id="sendBtn" class="btn-send">
+                                <i class="fas fa-paper-plane"></i> 发送
+                            </button>
+                            <button id="voiceBtn" class="btn-voice" title="语音输入">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="input-hints">
+                        <span><i class="fas fa-info-circle"></i> 提示：按 Enter 发送，Shift+Enter 换行</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 右侧信息面板 -->
+            <aside class="info-panel">
+                <!-- 今日情绪 -->
+                <div class="card">
+                    <h3><i class="fas fa-chart-line"></i> 今日情绪</h3>
+                    <div class="emotion-display">
+                        <div class="emotion-indicator">
+                            <div class="emotion-icon" id="currentEmotionIcon">😊</div>
+                            <div class="emotion-text">
+                                <div id="currentEmotion">平静</div>
+                                <small>当前情绪</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 统计信息 -->
+                <div class="card">
+                    <h3><i class="fas fa-chart-bar"></i> 对话统计</h3>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <span>对话次数</span>
+                            <span class="stat-value" id="chatCount">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>今日时长</span>
+                            <span class="stat-value" id="chatTime">0分钟</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>情绪识别</span>
+                            <span class="stat-value" id="emotionCount">0次</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 心灵贴士 -->
+                <div class="card">
+                    <h3><i class="fas fa-lightbulb"></i> 心灵贴士</h3>
+                    <div class="tip-content" id="tipContent">
+                        深呼吸练习：吸气4秒，屏息7秒，呼气8秒
+                    </div>
+                    <button id="refreshTip" class="btn-tip">
+                        <i class="fas fa-redo"></i> 换一个贴士
+                    </button>
+                </div>
+
+                <!-- 紧急帮助 -->
+                <div class="card emergency-card">
+                    <h3><i class="fas fa-first-aid"></i> 紧急帮助</h3>
+                    <p class="emergency-text">如果需要紧急心理支持：</p >
+                    <div class="emergency-contact">
+                        <i class="fas fa-phone-alt"></i>
+                        <div>
+                            <strong>心理援助热线</strong>
+                            <p>400-161-9995</p >
+                        </div>
+                    </div>
+                    <button id="emergencyBtn" class="btn-emergency">
+                        <i class="fas fa-hands-helping"></i> 紧急支持
+                    </button>
+                </div>
+            </aside>
+        </main>
+
+        <!-- 底部控制栏 -->
+        <footer class="footer">
+            <div class="footer-controls">
+                <button id="clearBtn" class="footer-btn">
+                    <i class="fas fa-trash"></i> 清空对话
+                </button>
+                <button id="exportBtn" class="footer-btn">
+                    <i class="fas fa-download"></i> 导出记录
+                </button>
+                <button id="themeBtn" class="footer-btn">
+                    <i class="fas fa-moon"></i> 夜间模式
+                </button>
+                <button id="aboutBtn" class="footer-btn">
+                    <i class="fas fa-info-circle"></i> 关于
+                </button>
+            </div>
+            <div class="footer-status">
+                <span id="connectionStatus"><i class="fas fa-wifi"></i> 已连接</span>
+                <span id="messageCount">消息: 0</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- 紧急支持弹窗 -->
+    <div class="modal" id="emergencyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-first-aid"></i> 紧急情绪支持</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="emergency-alert">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>如果你正处于情绪危机中，请立即联系专业人士：</p >
+                </div>
+                
+                <div class="hotline-list">
+                    <div class="hotline-item">
+                        <i class="fas fa-phone-volume"></i>
+                        <div>
+                            <h4>全国心理援助热线</h4>
+                            <p class="number">400-161-9995</p >
+                            <p class="desc">24小时免费服务</p >
+                        </div>
+                    </div>
+                    
+                    <div class="hotline-item">
+                        <i class="fas fa-heartbeat"></i>
+                        <div>
+                            <h4>希望24热线</h4>
+                            <p class="number">400-161-9995</p >
+                            <p class="desc">心理危机干预</p >
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="emergency-actions">
+                    <h4>立即可以做的事情：</h4>
+                    <ul>
+                        <li>深呼吸，从1数到10</li>
+                        <li>联系信任的家人或朋友</li>
+                        <li>到安全的环境休息</li>
+                        <li>告诉自己：这种感受会过去</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 关于弹窗 -->
+    <div class="modal" id="aboutModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-info-circle"></i> 关于心灵助手</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="about-content">
+                    <div class="about-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h4>心灵助手 v1.0</h4>
+                    <p>一个基于AI的情感支持助手，旨在提供温暖的心理陪伴。</p >
+                    
+                    <div class="features">
+                        <h5>功能特点：</h5>
+                        <ul>
+                            <li>智能情绪识别与回应</li>
+                            <li>情绪统计与分析</li>
+                            <li>个性化心灵贴士</li>
+                            <li>紧急心理支持资源</li>
+                            <li>隐私保护对话</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>重要提示：本程序为AI辅助工具，不能替代专业心理咨询或治疗。</p >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="emotions.js"></script>
+    <script src="coping-tips.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
